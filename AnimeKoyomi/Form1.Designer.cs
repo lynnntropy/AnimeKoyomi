@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Monday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Tuesday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Wednesday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Thursday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Friday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Saturday", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Sunday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Monday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Tuesday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Wednesday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Thursday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("Friday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup("Saturday", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup("Sunday", System.Windows.Forms.HorizontalAlignment.Left);
             this.button1 = new System.Windows.Forms.Button();
             this.scheduleListView = new System.Windows.Forms.ListView();
             this.Title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -44,10 +44,10 @@
             this.timezoneDropdown = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.googleCalendarBox = new System.Windows.Forms.GroupBox();
+            this.submitButton = new System.Windows.Forms.Button();
             this.calendarWarning = new System.Windows.Forms.Label();
             this.calendarLabel = new System.Windows.Forms.Label();
             this.calendarDropdown = new System.Windows.Forms.ComboBox();
-            this.submitButton = new System.Windows.Forms.Button();
             this.googleCalendarBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,28 +69,28 @@
             this.Time});
             this.scheduleListView.FullRowSelect = true;
             this.scheduleListView.GridLines = true;
-            listViewGroup1.Header = "Monday";
-            listViewGroup1.Name = "Mon";
-            listViewGroup2.Header = "Tuesday";
-            listViewGroup2.Name = "Tue";
-            listViewGroup3.Header = "Wednesday";
-            listViewGroup3.Name = "Wed";
-            listViewGroup4.Header = "Thursday";
-            listViewGroup4.Name = "Thu";
-            listViewGroup5.Header = "Friday";
-            listViewGroup5.Name = "Fri";
-            listViewGroup6.Header = "Saturday";
-            listViewGroup6.Name = "Sat";
-            listViewGroup7.Header = "Sunday";
-            listViewGroup7.Name = "Sun";
+            listViewGroup8.Header = "Monday";
+            listViewGroup8.Name = "Mon";
+            listViewGroup9.Header = "Tuesday";
+            listViewGroup9.Name = "Tue";
+            listViewGroup10.Header = "Wednesday";
+            listViewGroup10.Name = "Wed";
+            listViewGroup11.Header = "Thursday";
+            listViewGroup11.Name = "Thu";
+            listViewGroup12.Header = "Friday";
+            listViewGroup12.Name = "Fri";
+            listViewGroup13.Header = "Saturday";
+            listViewGroup13.Name = "Sat";
+            listViewGroup14.Header = "Sunday";
+            listViewGroup14.Name = "Sun";
             this.scheduleListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7});
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10,
+            listViewGroup11,
+            listViewGroup12,
+            listViewGroup13,
+            listViewGroup14});
             this.scheduleListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.scheduleListView.Location = new System.Drawing.Point(12, 13);
             this.scheduleListView.MultiSelect = false;
@@ -117,7 +117,7 @@
             this.GoogleLoginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.GoogleLoginButton.Location = new System.Drawing.Point(15, 291);
+            this.GoogleLoginButton.Location = new System.Drawing.Point(12, 291);
             this.GoogleLoginButton.Name = "GoogleLoginButton";
             this.GoogleLoginButton.Size = new System.Drawing.Size(162, 23);
             this.GoogleLoginButton.TabIndex = 3;
@@ -147,11 +147,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(328, 315);
+            this.label1.Location = new System.Drawing.Point(248, 317);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(91, 13);
+            this.label1.Size = new System.Drawing.Size(174, 13);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Select a timezone";
+            this.label1.Text = "Select a custom timezone (optional)";
             // 
             // googleCalendarBox
             // 
@@ -166,6 +166,17 @@
             this.googleCalendarBox.TabIndex = 7;
             this.googleCalendarBox.TabStop = false;
             this.googleCalendarBox.Text = "Google Calendar";
+            // 
+            // submitButton
+            // 
+            this.submitButton.Enabled = false;
+            this.submitButton.Location = new System.Drawing.Point(271, 15);
+            this.submitButton.Name = "submitButton";
+            this.submitButton.Size = new System.Drawing.Size(133, 62);
+            this.submitButton.TabIndex = 0;
+            this.submitButton.Text = "Create Events";
+            this.submitButton.UseVisualStyleBackColor = true;
+            this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
             // 
             // calendarWarning
             // 
@@ -196,16 +207,6 @@
             this.calendarDropdown.Name = "calendarDropdown";
             this.calendarDropdown.Size = new System.Drawing.Size(195, 21);
             this.calendarDropdown.TabIndex = 0;
-            // 
-            // submitButton
-            // 
-            this.submitButton.Enabled = false;
-            this.submitButton.Location = new System.Drawing.Point(271, 15);
-            this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(133, 62);
-            this.submitButton.TabIndex = 0;
-            this.submitButton.Text = "Create Events";
-            this.submitButton.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 

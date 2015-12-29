@@ -12,17 +12,22 @@ using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using HorriblesubsScheduleFetcher;
 using NodaTime;
+using Org.BouncyCastle.Utilities;
 
 namespace AnimeKoyomi
 {
     public partial class Form1 : Form
     {
-        private DateTimeZone userTimeZone = DateTimeZoneProviders.Tzdb["US/Pacific"];
+        //private DateTimeZone userTimeZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
+        private DateTimeZone userTimeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
+
         private ListViewGroupCollection listViewGroups;
 
         private List<ScheduleItem> downloadedSchedule;
 
         private CalendarService calendarService;
+
+        private bool initialTimezoneSelection = false;
 
         ////////////////
         // UI Methods
@@ -57,10 +62,22 @@ namespace AnimeKoyomi
         {
             // The user selected a timezone, refresh times for each item
 
-            this.userTimeZone 
-                = DateTimeZoneProviders.Tzdb[(string)this.timezoneDropdown.SelectedItem];
+            if (initialTimezoneSelection)
+            {
+                this.userTimeZone
+                    = DateTimeZoneProviders.Tzdb[(string) this.timezoneDropdown.SelectedItem];
 
-            this.RefreshLocalTimes();
+                this.RefreshLocalTimes();
+            }
+            else
+            {
+                initialTimezoneSelection = true;
+            }
+        }
+
+        private void submitButton_Click(object sender, EventArgs e)
+        {
+            this.CreateEvents();
         }
 
         ////////////////////
@@ -199,6 +216,8 @@ namespace AnimeKoyomi
             credPath = Path.Combine(credPath, ".credentials/animekoyomi");
 
             return Directory.Exists(credPath);
+
+            
         }
 
         private void OnSuccessfulAuth()
@@ -219,5 +238,113 @@ namespace AnimeKoyomi
 
             this.calendarDropdown.DataSource = calendarNameList;
         }
+
+        private void CreateRecurringCalendarEvent(ScheduleItem item)
+        {
+            var currentItem = item;
+
+            var eventStartDate = GetNextWeekday(
+                new LocalDate(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day),
+                (DayOfWeek) currentItem.weekday);
+
+            // quick fix for an off-by-one error (probably from converting between different weekday enums)
+            var fixedStartDate = new DateTime(eventStartDate.Year, eventStartDate.Month, eventStartDate.Day).AddDays(1);
+
+            var eventStartLocalTime = this.ConvertToLocalTime(currentItem.airTime);
+
+            var eventStartTime = new LocalDateTime(
+                fixedStartDate.Year,
+                fixedStartDate.Month,
+                fixedStartDate.Day, 
+                eventStartLocalTime.Hour,
+                eventStartLocalTime.Minute).ToDateTimeUnspecified();
+
+            var calendarEvent = new Event()
+            {
+                Summary = currentItem.seriesName,
+
+                Start = new EventDateTime()
+                {
+                    DateTime = eventStartTime,
+                    TimeZone = userTimeZone.Id
+                },
+
+                End = new EventDateTime() 
+                {
+                    DateTime = eventStartTime.AddMinutes(30),
+                    TimeZone = userTimeZone.Id
+
+                },
+
+                Recurrence = new String[]
+                {
+                    "RRULE:FREQ=WEEKLY"
+                }
+            };
+
+            var calendarList = this.calendarService.CalendarList.List().Execute().Items;
+            var selectedCalendar = calendarList[this.calendarDropdown.SelectedIndex];
+            
+            var createdEvent = calendarService.Events.Insert(calendarEvent, selectedCalendar.Id).Execute();
+        }
+
+        // See http://stackoverflow.com/questions/6346119/datetime-get-next-tuesday
+        // (Heavily modified to work with NodaTime data structures rather than plain .NET)
+        private static LocalDate GetNextWeekday(LocalDate start, DayOfWeek day)
+        {
+            var startDateTime = new DateTime(start.Year, start.Month, start.Day);
+
+            int daysToAdd = ((int)day - (int)startDateTime.DayOfWeek + 7) % 7;
+            var dateTime = startDateTime.AddDays(daysToAdd);
+
+            return new LocalDate(dateTime.Year, dateTime.Month, dateTime.Day);
+        }
+
+        private void CreateEvents()
+        {
+            var selectedShowItems = this.scheduleListView.CheckedItems;
+
+            var eventsToCreate = new List<ScheduleItem>();
+
+            foreach (ListViewItem item in selectedShowItems)
+            {
+                var title = item.Text;
+                var matchingItem = this.downloadedSchedule.Where(p => p.seriesName == title).ToList()[0];
+
+                if (this.CarriesOverToNextDay(matchingItem.airTime))
+                {
+                    if ((int)matchingItem.weekday <= 5)
+                    {
+                        matchingItem.weekday = matchingItem.weekday + 1;
+                    }
+                    else if ((int)matchingItem.weekday == 6)
+                    {
+                        matchingItem.weekday = (ScheduleItem.Weekday)0;
+                    }
+                }
+                else if (this.CarriesOverToPreviousDay(matchingItem.airTime))
+                {
+                    if ((int)matchingItem.weekday >= 1)
+                    {
+                        matchingItem.weekday = matchingItem.weekday - 1;
+                    }
+                    else if ((int)matchingItem.weekday == 0)
+                    {
+                        matchingItem.weekday = (ScheduleItem.Weekday)6;
+                    }
+                }
+
+                matchingItem.airTime = ConvertToLocalTime(matchingItem.airTime);
+
+                eventsToCreate.Add(matchingItem);
+            }
+
+            foreach (var item in eventsToCreate)
+            {
+                CreateRecurringCalendarEvent(item);
+            }
+        }
+
+        
     }
 }
