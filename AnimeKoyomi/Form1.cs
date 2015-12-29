@@ -302,6 +302,10 @@ namespace AnimeKoyomi
 
         private void CreateEvents()
         {
+            var calendarList = this.calendarService.CalendarList.List().Execute().Items;
+            var selectedCalendar = calendarList[this.calendarDropdown.SelectedIndex];
+            this.ClearCalendar(selectedCalendar);
+
             var selectedShowItems = this.scheduleListView.CheckedItems;
 
             var eventsToCreate = new List<ScheduleItem>();
@@ -345,6 +349,14 @@ namespace AnimeKoyomi
             }
         }
 
-        
+        private void ClearCalendar(CalendarListEntry calendar)
+        {
+            var events = calendarService.Events.List(calendar.Id).Execute().Items;
+
+            foreach (var calendarEvent in events)
+            {
+                calendarService.Events.Delete(calendar.Id, calendarEvent.Id).Execute();
+            }
+        }
     }
 }
